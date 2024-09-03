@@ -1,2 +1,2 @@
 # SimpleCsv
-A C# csv parse
+A C# csv parser
