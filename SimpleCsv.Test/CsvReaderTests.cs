@@ -32,14 +32,23 @@ public class CsvReaderTests
     [Test]
     public void ShouldReadLines()
     {
-        using (var csvStream = new StreamReader("./test.csv"))
+        MemoryStream ms = new MemoryStream();
+        using (var writer = new StreamWriter(ms))
         {
-            var reader = new CsvReader(new CsvOptions());
-            Assert.That
-            (
-                reader.ReadLines(csvStream).ToList()[3],
-                Is.TypeOf(typeof(Dictionary<string, string>))
-            );
+            writer.WriteLine("Name,Rank,Status");
+            writer.WriteLine("Ember,\"Fire,Lady\",Monke");
+            writer.WriteLine("Dizzy,Bottom,Bug");
+            writer.Flush();
+            var msRead = new MemoryStream(ms.ToArray(), false);
+            using (var csvStream = new StreamReader(msRead))
+            {
+                var reader = new CsvReader(new CsvOptions());
+                Assert.That
+                (
+                    reader.ReadLines(csvStream).ToList().First(),
+                    Is.TypeOf(typeof(Dictionary<string, string>))
+                );
+            }
         }
 
     }

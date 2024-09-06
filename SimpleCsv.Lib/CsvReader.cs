@@ -15,6 +15,7 @@ public class CsvReader(CsvOptions options)
             yield return ParseLine(reader.ReadLine() ?? throw new CsvException("Encountered a null line in the stream."));
         }
     }
+
     internal void SetHeaders(ICollection<string> TestHeaders)
     {
         Headers = TestHeaders;
