@@ -34,10 +34,13 @@ public class CsvWriterTests
             new TestRecord("4", "Goodbye4", "Ded4"),
             new TestRecord("5", "Goodbye5", "Ded5"),
         };
-        var writer = new CsvWriter<TestRecord>(new CsvOptions(), new StreamWriter("test_out.csv"));
-        writer.WriteHeaders(recods[1]);
-        writer.WriteRows(recods);
-        Assert.IsTrue(Path.Exists("test.csv"));
+        using (var ms = new MemoryStream())
+        {
+            var writer = new CsvWriter<TestRecord>(new CsvOptions(), new StreamWriter(ms));
+            writer.WriteHeaders(recods);
+            writer.WriteRows(recods);
+            Assert.IsTrue(ms.Length > 0);
+        }
     }
 }
 public record TestRecord(string Name, string Surname, string Rank);

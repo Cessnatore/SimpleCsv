@@ -5,9 +5,9 @@ public class CsvWriter<T>(CsvOptions options, StreamWriter streamWriter)
     private readonly StreamWriter Stream = streamWriter;
     private readonly String Headers = string.Empty;
 
-    public void WriteHeaders(T data)
+    public void WriteHeaders(ICollection<T> data)
     {
-        Stream.WriteLine(GenerateHeader(data));
+        Stream.WriteLine(GenerateHeader(data.FirstOrDefault() ?? throw new NullReferenceException("The list of records was empty")));
     }
 
     public void WriteRow(T data)
@@ -20,8 +20,8 @@ public class CsvWriter<T>(CsvOptions options, StreamWriter streamWriter)
         foreach (var line in data)
         {
             Stream.WriteLine(GenerateRow(line));
+            Stream.Flush();
         }
-        Stream.Close();
     }
 
     internal string GenerateHeader(T data)
