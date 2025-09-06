@@ -50,6 +50,28 @@ public class CsvReaderTests
                 );
             }
         }
+    }
+    [Test]
+    public void ShouldSelect()
+    {
+        MemoryStream ms = new MemoryStream();
+        using (var writer = new StreamWriter(ms))
+        {
+            writer.WriteLine("Name,Rank,Status");
+            writer.WriteLine("Ember,\"Fire,Lady\",Monke");
+            writer.WriteLine("Dizzy,Bottom,Bug");
+            writer.Flush();
+            var msRead = new MemoryStream(ms.ToArray(), false);
+            using (var csvStream = new StreamReader(msRead))
+            {
+                var reader = new CsvReader(new CsvOptions());
+                Assert.That
+                (
+                    reader.ReadLines(csvStream).Where(line => line["Rank"].ToLower().Equals("bottom")).First(),
+                    Is.EquivalentTo(new Dictionary<string, string> { { "Name", "Dizzy" }, { "Rank", "Bottom" }, { "Status", "Bug" } })
+                );
+            }
+        }
 
     }
 }
